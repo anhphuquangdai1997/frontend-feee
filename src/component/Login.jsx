@@ -7,7 +7,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -26,10 +25,13 @@ const Login = () => {
             const response = await axios.post('https://backend-fullstack-kbiq.onrender.com/api/v1/login', {
                 email,
                 password,
-            });
+            },
+                {
+                    withCredentials: true, // Gửi cookie kèm theo request
+                }
+            );
             const data = response.data;
             console.log('Dữ liệu từ API:', data);
-            navigate('/user');
 
         }
         catch (error) {
