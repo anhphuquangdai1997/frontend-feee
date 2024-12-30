@@ -7,6 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate=useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -32,6 +33,7 @@ const Login = () => {
             );
             const data = response.data;
             console.log('Dữ liệu từ API:', data);
+            navigate('/user')
 
         }
         catch (error) {
