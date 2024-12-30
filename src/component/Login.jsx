@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -6,41 +7,42 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate =useNavigate()
-    
-    const handleSubmit =async(e)=>{
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
         setLoading(true)
 
-        if(!email ||!password){
+        if (!email || !password) {
             setError("vui lòng nhập")
             setLoading(false)
         }
-        if(!/\S+@\S+\.\S+/.test(email)){
+        if (!/\S+@\S+\.\S+/.test(email)) {
             setError("email không hợp lệ");
             setLoading(false)
         }
         try {
-            const response = await fetch('/api/v1/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    
-                },
-                body: JSON.stringify({ email, password }),
-            })
-            if(!response.ok){
-                const errorData=await response.json()
-                throw new Error(errorData.message || 'đăng nhập thất bại')
-            }
-            const data=await response.json()
-            console.log(data)
+            const response = await axios.post('/api/v1/login', {
+                email,
+                password,
+            });
+            const data = response.data;
+            console.log('Dữ liệu từ API:', data);
             navigate('/user');
-            
-        } 
+
+        }
         catch (error) {
-            setError(error.message ||'lỗi connect đến server')
+            if (error.response) {
+                // Lỗi từ server (mã trạng thái 4xx, 5xx)
+                setError(error.response.data.message || 'Đăng nhập thất bại');
+            } else if (error.request) {
+                // Không nhận được phản hồi từ server
+                setError('Không thể kết nối đến server');
+            } else {
+                // Các lỗi khác
+                setError(error.message);
+            }
         }
         finally {
             setLoading(false)
@@ -48,14 +50,14 @@ const Login = () => {
     }
 
 
-  return (
-    <form onSubmit={handleSubmit}>
-        <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder='nhập email ' />
-        <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder='nhập password'/>
-        <button disabled={loading} type='submit'>{loading ? 'đang đăng nhập' :'đăng nhập'}</button>
-        {error && <div style={{ color: 'red' }}>{error}</div>} {/* Hiển thị thông báo lỗi */}
-    </form>
-  )
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='nhập email ' />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='nhập password' />
+            <button disabled={loading} type='submit'>{loading ? 'đang đăng nhập' : 'đăng nhập'}</button>
+            {error && <div style={{ color: 'red' }}>{error}</div>} {/* Hiển thị thông báo lỗi */}
+        </form>
+    )
 }
 
 export default Login
