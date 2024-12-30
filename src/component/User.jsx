@@ -8,7 +8,7 @@ export const User = () => {
       const config = {
         withCredentials: true,
       };
-      const response = await axios.get("/api/v1/admin/users", config);
+      const response = await axios.get("https://backend-fullstack-kbiq.onrender.com/api/v1/admin/users", config);
       setUsers(response?.data?.users)
     } catch (error) {
       console.log(error);

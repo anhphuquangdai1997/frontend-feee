@@ -23,7 +23,7 @@ const Login = () => {
             setLoading(false)
         }
         try {
-            const response = await axios.post('/api/v1/login', {
+            const response = await axios.post('https://backend-fullstack-kbiq.onrender.com/api/v1/login', {
                 email,
                 password,
             });
