@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -27,12 +28,9 @@ const Login = () => {
                 email,
                 password,
             },
-                {
-                    withCredentials: true, // Gửi cookie kèm theo request
-                }
             );
-            const data = response.data;
-            console.log('Dữ liệu từ API:', data);
+            Cookies.set('token', response.data.token, { expires: 7, path: '/' });
+            console.log('Dữ liệu từ API:', response.data);
             navigate('/user')
 
         }
